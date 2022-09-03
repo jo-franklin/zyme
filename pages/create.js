@@ -146,12 +146,11 @@ const steps = [
 
 export default function Create() {
   const [activeStep, setActiveStep] = React.useState(0);
-  const [checked, setChecked] = React.useState(true);
-  const [isDisabled, setDisabled] = React.useState(true);
 
-  const handleChange = (event, isDisabled) => {
-    setChecked(event.target.checked);
-    setDisabled(isDisabled);
+  const [isStepValid, setIsStepValid] = React.useState('disabled');
+
+  const handleIsStepValid = (val) => {
+    setIsStepValid(val);
   };
 
   const handleNext = () => {
@@ -191,62 +190,64 @@ export default function Create() {
     <Container maxWidth="lg" className={classes.container}>
 
             <Stepper activeStep={activeStep} orientation="vertical" className={classes.stepper}>
+  
                 {steps.map((step, index) => (
-                <Step key={step.label}>
-                    <StepLabel
-                    optional={
-                        (index === 5 ? (
-                        <Typography variant="caption">Last step</Typography>
-                        ) : null) 
-                    }
-                    >
 
-                    {step.label}
-                    </StepLabel>
-                    <StepContent TransitionProps={{ unmountOnExit: false }}>
+                  <Step key={step.label}>
+                      <StepLabel
+                      optional={
+                          (index === 5 ? (
+                          <Typography variant="caption">Last step</Typography>
+                          ) : null) 
+                      }
+                      >
 
-                    
-                    <FormControl>
-                        <RadioGroup
-                        aria-labelledby="demo-radio-buttons-group-label"
-                        defaultValue="female"
-                        name="radio-buttons-group"
-                        >
-                        {step.options.map(({ name, id })=><div><FormControlLabel value={name} key={id.toString()} control={<Radio />} label={name} /></div>)}
-                        </RadioGroup>
+                      {step.label}
+                      </StepLabel>
+                      <StepContent TransitionProps={{ unmountOnExit: false }}>
 
-                        {step.fermentables.length ? step.fermentables.map((data) => (
+                      <FormControl>
+                          <RadioGroup
+                          aria-labelledby="demo-radio-buttons-group-label"
+                          defaultValue="female"
+                          name="radio-buttons-group"
+                          >
+                          {step.options.map(({ name, id })=><div><FormControlLabel value={name} key={id.toString()} control={<Radio />} label={name} /></div>)}
+                          </RadioGroup>
+
+                          {step.fermentables.length ? step.fermentables.map((data) => (
+                            <div>
+                              <Typography>{data.name}</Typography>
+                              <Fermentable data={data}></Fermentable>
+                            </div>
+                        )) : null}
+
+                        {step.hops.length ? <div><Hops isStepValid={isStepValid} data={step.hops}></Hops></div>: null}
+                        
+                      </FormControl>
+
+                      <Typography>{step.description}</Typography>
+                      <Box sx={{ mb: 2 }}>
                           <div>
-                            <Typography>{data.name}</Typography>
-                            <Fermentable data={data}></Fermentable>
+                          <Button
+                              disabled={handleIsStepValid}
+                              variant="contained"
+                              onClick={handleNext}
+                              sx={{ mt: 1, mr: 1 }}
+                          >
+                              {index === steps.length - 1 ? 'Finish' : 'Continue'}
+                          </Button>
+                          <Button
+                              disabled={index === 0}
+                              onClick={handleBack}
+                              sx={{ mt: 1, mr: 1 }}
+                          >
+                              Back
+                          </Button>
                           </div>
-                      )) : null}
-
-                      {step.hops.length ? <div><Hops data={step.hops}></Hops></div>: null}
-                       
-                    </FormControl>
-
-                    <Typography>{step.description}</Typography>
-                    <Box sx={{ mb: 2 }}>
-                        <div>
-                        <Button
-                            variant="contained"
-                            onClick={handleNext}
-                            sx={{ mt: 1, mr: 1 }}
-                        >
-                            {index === steps.length - 1 ? 'Finish' : 'Continue'}
-                        </Button>
-                        <Button
-                            disabled={index === 0}
-                            onClick={handleBack}
-                            sx={{ mt: 1, mr: 1 }}
-                        >
-                            Back
-                        </Button>
-                        </div>
-                    </Box>
-                    </StepContent>
-                </Step>
+                      </Box>
+                      </StepContent>
+                  </Step>
                 ))}
             </Stepper>
             {activeStep === steps.length && (
