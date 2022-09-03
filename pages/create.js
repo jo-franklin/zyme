@@ -12,14 +12,13 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import { makeStyles } from '@material-ui/core/styles'
 import Fermentable from '../components/fermentable';
+import Hops from '../components/hops';
 
 function valuetext(value) {
   return `${value}%`;
 }
-
 
 const steps = [
   {
@@ -32,9 +31,7 @@ const steps = [
         { id: '5', name: 'Brown Ale' }
     ],
     fermentables: [],
-    hops: [
-      
-    ]
+    hops: []
   },
   {
     label: 'Select Substyle',
@@ -42,7 +39,8 @@ const steps = [
         { id: '1', name: 'sweet stout' },
         { id: '2', name: 'American Stout' }
     ],
-    fermentables: []
+    fermentables: [],
+    hops:[]
   },
   {
     label: 'Select Fermentables',
@@ -97,17 +95,51 @@ const steps = [
         }],
         average: 50
       },
-    ]
+    ],
+    hops:[]
   },
   {
     label: 'Select Hops',
     options: [],
-    fermentables: []
+    fermentables: [],
+    hops: [
+      {
+        label: 'Admiral',
+        id: '100',
+        aa: '14.9',
+        description: 'This is the description'
+      },
+      {
+        label: 'Citra',
+        id: '101',
+        aa: '12',
+        description: 'This is the description'
+      },
+      {
+        label: 'Centennial',
+        id: '102',
+        aa: '4',
+        description: 'This is the description'
+      },
+      {
+        label: 'Cascade',
+        id: '103',
+        aa: '11',
+        description: 'This is the description'
+      },
+      {
+        label: 'Simcoe',
+        id: '104',
+        aa: '3.4',
+        description: 'This is the description'
+      }
+    ]
   },
   {
     label: 'Select Yeast ',
     options: [],
-    fermentables: []
+    fermentables: [],
+    hops:[]
   },
 ];
 
@@ -171,17 +203,17 @@ export default function Create() {
 
                     {step.label}
                     </StepLabel>
-                    <StepContent>
+                    <StepContent TransitionProps={{ unmountOnExit: false }}>
 
                     
                     <FormControl>
-                        <FormLabel id="demo-radio-buttons-group-label">Style</FormLabel>
                         <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
                         defaultValue="female"
                         name="radio-buttons-group"
                         >
                         {step.options.map(({ name, id })=><div><FormControlLabel value={name} key={id.toString()} control={<Radio />} label={name} /></div>)}
+                        </RadioGroup>
 
                         {step.fermentables.length ? step.fermentables.map((data) => (
                           <div>
@@ -189,7 +221,9 @@ export default function Create() {
                             <Fermentable data={data}></Fermentable>
                           </div>
                       )) : null}
-                        </RadioGroup>
+
+                      {step.hops.length ? <div><Hops data={step.hops}></Hops></div>: null}
+                       
                     </FormControl>
 
                     <Typography>{step.description}</Typography>
