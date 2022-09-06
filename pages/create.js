@@ -8,13 +8,10 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { Container } from '@material-ui/core'
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
 import { makeStyles } from '@material-ui/core/styles'
 import Fermentable from '../components/fermentable';
 import Hops from '../components/hops';
+import BeerStyle from '../components/beerStyle';
 
 function valuetext(value) {
   return `${value}%`;
@@ -146,19 +143,65 @@ const steps = [
 
 export default function Create() {
   const [activeStep, setActiveStep] = React.useState(0);
+  const [stepValidator, setStepValidator] = React.useState([false, false, false, false, false])
+  const [isStepValid, setIsStepValid] = React.useState(false);
+  const [fermentTotalPercentage, setFermentTotalPercentage] = React.useState(0);
+  const [fermentSliderArray, setFermentSliderArray] = React.useState([0, 0, 0, 0, 0, 0, 0,]);
 
-  const [isStepValid, setIsStepValid] = React.useState('disabled');
+  const handleFermentTotalPercentage = async (event, index, count) => {
+    console.log('index', index)
+    console.log(fermentSliderArray)
+    // Initialize ferment slider totals array 
 
-  const handleIsStepValid = (val) => {
-    setIsStepValid(val);
+    // if (!fermentSliderArray) {
+    //   console.log('init')
+    //   setFermentSliderArray(new Array(count).fill(0));
+    // }
+
+    const newState = fermentSliderArray.map((val, i) => {
+      if (index === i) {
+        return event.target.value;
+      }
+      return val;
+    });
+
+    setFermentSliderArray(newState);
+      // fermentSliderArray[index] = event.target.value;
+
+      setFermentTotalPercentage(newState.reduce((a, b) => a + b, 0));
+
+      // fermentSliderArray.map((val) => {
+      //   setFermentTotalPercentage(val)
+      // });
+
+      // if (fermentTotalPercentage < 100) {
+        
+      //   console.log('less than 100%');
+      // } else {
+      //   console.log('more than 100%')
+      // } 
+    
+    
   };
 
+  const handleSetStepValidator = () => {
+    const newItems = stepValidator.map((item, index) => {
+      if (activeStep == index) {
+        return true
+      }
+      return item;
+    });
+    setStepValidator(newItems);
+  };
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    // debugger;
+    handleSetStepValidator();
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setIsStepValid(true);
   };
 
   const handleReset = () => {
@@ -186,11 +229,13 @@ export default function Create() {
   }))
   const classes = useStyles()
 
+  
+
   return (
     <Container maxWidth="lg" className={classes.container}>
 
             <Stepper activeStep={activeStep} orientation="vertical" className={classes.stepper}>
-  
+
                 {steps.map((step, index) => (
 
                   <Step key={step.label}>
@@ -206,31 +251,24 @@ export default function Create() {
                       </StepLabel>
                       <StepContent TransitionProps={{ unmountOnExit: false }}>
 
-                      <FormControl>
-                          <RadioGroup
-                          aria-labelledby="demo-radio-buttons-group-label"
-                          defaultValue="female"
-                          name="radio-buttons-group"
-                          >
-                          {step.options.map(({ name, id })=><div><FormControlLabel value={name} key={id.toString()} control={<Radio />} label={name} /></div>)}
-                          </RadioGroup>
+                      <BeerStyle step={activeStep} stepValidator={stepValidator} setStepValidator={handleSetStepValidator}  options={step.options}></BeerStyle>
 
-                          {step.fermentables.length ? step.fermentables.map((data) => (
-                            <div>
-                              <Typography>{data.name}</Typography>
-                              <Fermentable data={data}></Fermentable>
-                            </div>
-                        )) : null}
+                      {step.fermentables.length ? step.fermentables.map((data, index) => (
+                        <div>
+                          <Typography>{data.name}</Typography>
+                          <Fermentable count={step.fermentables.length} index={index} handleFermentTotalPercentage={handleFermentTotalPercentage} data={data}></Fermentable>
+                        </div>
+                    )) : null}
+                        <h2>{fermentTotalPercentage}</h2>
 
-                        {step.hops.length ? <div><Hops isStepValid={isStepValid} data={step.hops}></Hops></div>: null}
-                        
-                      </FormControl>
+                    {step.hops.length ? <div><Hops isStepValid={isStepValid} data={step.hops}></Hops></div>: null}
 
                       <Typography>{step.description}</Typography>
                       <Box sx={{ mb: 2 }}>
                           <div>
                           <Button
-                              disabled={handleIsStepValid}
+                              type="submit"
+                              disabled={!stepValidator[activeStep]}
                               variant="contained"
                               onClick={handleNext}
                               sx={{ mt: 1, mr: 1 }}
@@ -249,6 +287,7 @@ export default function Create() {
                       </StepContent>
                   </Step>
                 ))}
+
             </Stepper>
             {activeStep === steps.length && (
                 <Paper square elevation={0} sx={{ p: 3 }}>

@@ -26,6 +26,7 @@ export default function Fermentable(props) {
       marks={props.data.marks}
       step={null}
       valueLabelDisplay="on"
+      onChange={(event) => props.handleFermentTotalPercentage(event, props.index, props.count)}
   />
 
   <Checkbox checked={checked} aria-label={props.data.name} onChange={handleChange} />

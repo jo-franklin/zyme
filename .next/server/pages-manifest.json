@@ -2,5 +2,7 @@
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
   "/_error": "pages/_error.js",
+  "/api/routes": "pages/api/routes.js",
+  "/api/session": "pages/api/session.js",
   "/create": "pages/create.js"
 }
