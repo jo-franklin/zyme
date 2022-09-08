@@ -12,9 +12,14 @@ const useStyles = makeStyles({
 export default function Fermentable(props) {
     const [checked, setChecked] = React.useState(false);
     const classes = useStyles();
+
     const handleChange = (event) => {
-    setChecked(event.target.checked);
-    };
+        setChecked(event.target.checked);
+        const val = event.target.checked ? props.data.average : 0;
+        const data = event.target.checked ? props.data : {};
+
+        props.handleFermentTotalPercentage(val, props.index, props.count, data)
+    };  
 
     return (
       <div>
@@ -26,7 +31,7 @@ export default function Fermentable(props) {
       marks={props.data.marks}
       step={null}
       valueLabelDisplay="on"
-      onChange={(event) => props.handleFermentTotalPercentage(event, props.index, props.count)}
+      onChange={(event) => props.handleFermentTotalPercentage(event.target.value, props.index, props.count, props.data)}
   />
 
   <Checkbox checked={checked} aria-label={props.data.name} onChange={handleChange} />

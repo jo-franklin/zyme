@@ -65,6 +65,14 @@ const steps = [
         {
           value: 37,
           label: '37%',
+        },
+        {
+          value: 40,
+          label: '40%',
+        },
+        {
+          value: 45,
+          label: '45%',
         }],
         average: 27
       },
@@ -146,47 +154,46 @@ export default function Create() {
   const [stepValidator, setStepValidator] = React.useState([false, false, false, false, false])
   const [isStepValid, setIsStepValid] = React.useState(false);
   const [fermentTotalPercentage, setFermentTotalPercentage] = React.useState(0);
-  const [fermentSliderArray, setFermentSliderArray] = React.useState([0, 0, 0, 0, 0, 0, 0,]);
+  const [fermentSliderArray, setFermentSliderArray] = React.useState([{ val: 0, data: {}},{ val: 0, data: {}}, { val: 0, data: {}}, { val: 0, data: {}}, { val: 0, data: {}}, { val: 0, data: {}},{ val: 0, data: {}}]);
 
-  const handleFermentTotalPercentage = async (event, index, count) => {
-    console.log('index', index)
-    console.log(fermentSliderArray)
-    // Initialize ferment slider totals array 
+  const handleFermentTotalPercentage = async (value, index, count, data) => {
+
 
     // if (!fermentSliderArray) {
     //   console.log('init')
     //   setFermentSliderArray(new Array(count).fill(0));
     // }
-
     const newState = fermentSliderArray.map((val, i) => {
       if (index === i) {
-        return event.target.value;
+        return { val: value, data};
       }
       return val;
     });
 
     setFermentSliderArray(newState);
-      // fermentSliderArray[index] = event.target.value;
-
-      setFermentTotalPercentage(newState.reduce((a, b) => a + b, 0));
+    const percentage = newState.reduce((a, b) => {
+      return a + b.val
+    }, 0)
+    setFermentTotalPercentage(percentage);
 
       // fermentSliderArray.map((val) => {
       //   setFermentTotalPercentage(val)
       // });
 
-      // if (fermentTotalPercentage < 100) {
-        
-      //   console.log('less than 100%');
-      // } else {
-      //   console.log('more than 100%')
-      // } 
-    
-    
+      if (percentage === 100) {
+        handleSetStepValidator();
+      } else {
+        console.log('Fermentables must equal 100%')
+        handleSetStepValidator(false);
+      }
   };
 
-  const handleSetStepValidator = () => {
+  const handleSetStepValidator = (val) => {
     const newItems = stepValidator.map((item, index) => {
       if (activeStep == index) {
+        if (val !== undefined) {
+          return val
+        }
         return true
       }
       return item;
@@ -195,7 +202,6 @@ export default function Create() {
   };
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    // debugger;
     handleSetStepValidator();
   };
 
@@ -259,7 +265,10 @@ export default function Create() {
                           <Fermentable count={step.fermentables.length} index={index} handleFermentTotalPercentage={handleFermentTotalPercentage} data={data}></Fermentable>
                         </div>
                     )) : null}
-                        <h2>{fermentTotalPercentage}</h2>
+                        <h2>{fermentTotalPercentage}%</h2>
+                        <ul>{fermentSliderArray.map((data) => (
+                          <li>{data.data.name}</li>
+                        ))}</ul>
 
                     {step.hops.length ? <div><Hops isStepValid={isStepValid} data={step.hops}></Hops></div>: null}
 
