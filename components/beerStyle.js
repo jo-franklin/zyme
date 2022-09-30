@@ -8,9 +8,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 export default function BeerStyle(props) {
     const [beerStyleValue, setBeerStyleValue] = React.useState();
-    const handleRadioChange = (event) => {
-        props.setStepValidator();
-    };
+
+    const handleChange = (event) => {
+      props.setStepValidator()
+      props.addStyle(event.target.value, props.isSubStyle)
+    }
+
       return (
         <>
         <FormControl>
@@ -18,7 +21,7 @@ export default function BeerStyle(props) {
         aria-labelledby="demo-radio-buttons-group-label"
         name="radio-buttons-group"
         value={beerStyleValue}
-        onChange={handleRadioChange}
+        onChange={(e) => {handleChange(e)}}
         >
         {props.options.map(({ name, id })=><div><FormControlLabel value={name} key={id.toString()} control={<Radio />} label={name} /></div>)}
         </RadioGroup>                        

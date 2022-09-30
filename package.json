@@ -30,6 +30,7 @@
     "@mui/icons-material": "^5.10.2",
     "@mui/material": "^5.10.0",
     "@svgr/webpack": "^4.3.3",
+    "brauhaus": "^1.1.1",
     "clsx": "^1.0.4",
     "cross-env": "^5.2.0",
     "isomorphic-unfetch": "^3.0.0",

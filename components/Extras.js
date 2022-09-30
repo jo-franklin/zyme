@@ -9,7 +9,7 @@ import { styled } from '@mui/material/styles';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
 import MuiInput from '@mui/material/Input';
 import Scale from '@mui/icons-material/Scale';
-import Hop from './Hop';
+import Extra from './Extra';
 
 const Input = styled(MuiInput)`
   width: 42px;
@@ -167,7 +167,7 @@ const Root = styled('div')(
   `,
   );
 
-export default function Hops(props) {
+export default function Extras(props) {
     const {
         getRootProps,
         getInputLabelProps,
@@ -180,7 +180,7 @@ export default function Hops(props) {
         focused,
         setAnchorEl,
       } = useAutocomplete({
-        id: 'hops-search',
+        id: 'extras-search',
         defaultValue: [],
         multiple: true,
         options: props.data,
@@ -191,7 +191,7 @@ export default function Hops(props) {
       return (
         <Root>
           <div {...getRootProps()}>
-            <Label {...getInputLabelProps()}>Select hops</Label>
+            <Label {...getInputLabelProps()}>Select extras</Label>
             <InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
               {value.map((option, index) => (
                 <StyledTag label={option.label} {...getTagProps({ index })} />
@@ -213,7 +213,7 @@ export default function Hops(props) {
 
           {value.map((option, index) => (
             <>
-              <Hop id={index} option={option}></Hop>
+              <Extra id={index} option={option}></Extra>
             </>
           ))}
         </Root>

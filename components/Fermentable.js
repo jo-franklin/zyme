@@ -11,27 +11,35 @@ const useStyles = makeStyles({
   
 export default function Fermentable(props) {
     const [checked, setChecked] = React.useState(false);
+    const [sliderValue, setSliderValue] = React.useState();
     const classes = useStyles();
 
     const handleChange = (event) => {
         setChecked(event.target.checked);
-        const val = event.target.checked ? props.data.average : 0;
+        const val = event.target.checked ? sliderValue : 0;
         const data = event.target.checked ? props.data : {};
+        props.handleFermentTotalPercentage(val, props.index, props.count, data);
+        props.addFermentable(data, sliderValue);
 
-        props.handleFermentTotalPercentage(val, props.index, props.count, data)
     };  
 
+    const handleSliderChange = (event) => {
+      setSliderValue(event.target.value);
+      props.handleFermentTotalPercentage(event.target.value, props.index, props.count, props.data);
+      props.addFermentable(props.data, sliderValue);
+    }
     return (
       <div>
       <Slider
       className={classes.slider}
       disabled={!checked}
       aria-label="Always visible"
+      value={sliderValue}
       defaultValue={props.data.average}
       marks={props.data.marks}
       step={null}
       valueLabelDisplay="on"
-      onChange={(event) => props.handleFermentTotalPercentage(event.target.value, props.index, props.count, props.data)}
+      onChange={handleSliderChange}
   />
 
   <Checkbox checked={checked} aria-label={props.data.name} onChange={handleChange} />

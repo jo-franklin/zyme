@@ -121,7 +121,7 @@ export default function Hop(props) {
     const handleUsageChange = (event) => {
         setUsage(event.target.value);
 
-        if (event.target.value === 'dryHop') {
+        if (event.target.value === 'primary' || event.target.value === 'secondary' || event.target.value === 'bottle') {
           setValues({ ...values, ['timeType']: 'days', ['time']: 3 });
         } else {
           setValues({ ...values, ['timeType']: 'mins', ['time']: 60 });
@@ -131,7 +131,6 @@ export default function Hop(props) {
         <>
         <h2>{props.option.label} </h2>
         <p>{props.option.description}</p>
-        <p>Alpha Acid{props.option.aa}</p>
         <Grid container spacing={2} alignItems="center">
         <Grid item>
           <Scale />
@@ -166,30 +165,32 @@ export default function Hop(props) {
           labelId="Hop Usage"
           id="hop-usage-select"
           value={usage}
-          label="Hop Usage"
+          label="Extra Usage"
           onChange={handleUsageChange}>
+          <MenuItem2 value='mash'>Mash</MenuItem2>
           <MenuItem2 value='boil'>Boil</MenuItem2>
           <MenuItem2 value='hopStand'>Hop Stand</MenuItem2>
-          <MenuItem2 value='dryHop'>Dry Hop</MenuItem2>
+          <MenuItem2 value='primary'>Primary</MenuItem2>
+          <MenuItem2 value='secondary'>Secondary</MenuItem2>
+          <MenuItem2 value='bottle'>Bottle</MenuItem2>
           </Select>
       </FormControl>
 
-
-        <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-          <OutlinedInput
-            id="outlined-adornment-weight"
-            value={values.time}
-            type="number"
-            onChange={handleChange('time')}
-            endAdornment={<InputAdornment position="end">{values.timeType}</InputAdornment>}
-            aria-describedby="outlined-weight-helper-text"
-            inputProps={{
-              'aria-label': 'weight',
-            }}
-          />
-          <FormHelperText id="outlined-weight-helper-text">Time in minutes or days</FormHelperText>
-        </FormControl>
-      </Box>
-      </>
-      );
+    <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+        <OutlinedInput
+        id="outlined-adornment-weight"
+        value={values.time}
+        type="number"
+        onChange={handleChange('time')}
+        endAdornment={<InputAdornment position="end">{values.timeType}</InputAdornment>}
+        aria-describedby="outlined-weight-helper-text"
+        inputProps={{
+            'aria-label': 'weight',
+        }}
+        />
+        <FormHelperText id="outlined-weight-helper-text">Time in minutes or days</FormHelperText>
+    </FormControl>
+    </Box>
+    </>
+    );
 }
